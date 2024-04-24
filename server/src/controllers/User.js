@@ -85,6 +85,7 @@ export const logoutUser = async (req, res) => {
   }
 };
 //simdilik kullanmayacagiz routes >> usera bagli.
+// Artık kullanıyoruz la.
 export const getAllAccounts = async (req, res) => {
   try {
     // Retrieve all accounts from the database
@@ -156,7 +157,6 @@ export const getAllAccounts = async (req, res) => {
     });
   }
 };
-
 
 export const getAccounts = async (req, res) => {
   try {
