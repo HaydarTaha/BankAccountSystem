@@ -184,7 +184,13 @@ const formatIBAN = (iban) => {
 
 // Format for balance and available balance. Add space for every 3 digits
 const formatBalance = (balance) => {
-  return balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  const formattedBalance = balance
+    .toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })
+    .replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  return formattedBalance;
 };
 
 export default AccountCard;
