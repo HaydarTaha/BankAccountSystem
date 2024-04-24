@@ -4,6 +4,7 @@ import { getUserAccounts } from "../service/User";
 import { deleteAccount } from "../service/Account";
 import AccountCard from "../components/AccountCard";
 import AddAccountModal from "../components/AddAccountModal";
+import AssetsModal from "../components/AssetsModal";
 
 // Account list component
 const AccountList = () => {
@@ -11,6 +12,7 @@ const AccountList = () => {
   const [accounts, setAccounts] = useState([]);
   const [isLoading, setIsLoading] = useState(true); // State for loading animation
   const [showAddAccountModal, setShowAddAccountModal] = useState(false);
+  const [showAssetsModal, setShowAssetsModal] = useState(false);
 
   React.useEffect(() => {
     const userID = document.cookie.split("=")[1];
@@ -44,7 +46,6 @@ const AccountList = () => {
       <div className="mb-3">
         <button
           onClick={() => {
-            console.log("Add Account button clicked");
             setShowAddAccountModal(true);
           }}
           className="btn btn-primary me-2"
@@ -55,9 +56,21 @@ const AccountList = () => {
           <AddAccountModal
             handleClose={() => setShowAddAccountModal(false)}
             accounts={accounts}
+            setAccounts={setAccounts}
           />
         )}
-        <button className="btn btn-secondary">My Assets</button>
+        <button
+          className="btn btn-secondary"
+          onClick={() => setShowAssetsModal(true)}
+        >
+          My Assets
+        </button>
+        {showAssetsModal && (
+          <AssetsModal
+            handleClose={() => setShowAssetsModal(false)}
+            accounts={accounts}
+          />
+        )}
       </div>
       {isLoading ? ( // Conditional rendering for loading animation
         <div className="text-center">

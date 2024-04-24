@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { getDepositOptions } from "../service/DepositOption";
+import { getUserAccounts } from "../service/User";
 import { createAccount } from "../service/Account";
 
-const AddAccountModal = ({ handleClose, accounts }) => {
+const AddAccountModal = ({ handleClose, accounts, setAccounts }) => {
   const [depositOptions, setDepositOptions] = useState([]);
   const [accountType, setAccountType] = useState("");
   const [selectedDepositOption, setSelectedDepositOption] = useState(null);
@@ -11,19 +12,26 @@ const AddAccountModal = ({ handleClose, accounts }) => {
   const [balance, setBalance] = useState(0);
   const [currency, setCurrency] = useState("");
   const [accountCreated, setAccountCreated] = useState(false);
-  const [alertMessage, setAlertMessage] = useState(""); // State for alert message
-  const accountTypes = ["Checking", "Deposit"];
+  const [alertMessage, setAlertMessage] = useState("");
 
   useEffect(() => {
-    getDepositOptions()
-      .then((data) => setDepositOptions(data.data))
-      .catch((error) => console.error(error));
+    const fetchDepositOptions = async () => {
+      try {
+        const response = await getDepositOptions();
+        setDepositOptions(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchDepositOptions();
   }, []);
 
   const handleSelectDepositOption = (optionId) => {
-    setSelectedDepositOption(
-      depositOptions.find((option) => option.depositOptionID === optionId)
+    const option = depositOptions.find(
+      (option) => option.depositOptionID === optionId
     );
+    setSelectedDepositOption(option);
   };
 
   const handleCloseOutside = (e) => {
@@ -33,50 +41,48 @@ const AddAccountModal = ({ handleClose, accounts }) => {
   };
 
   const handleAccountNameChange = (e) => {
-    const newName = e.target.value;
-    setAccountName(newName);
+    setAccountName(e.target.value);
   };
 
-  const handleCreateAccount = () => {
-    if (accountType === "Checking") {
-      const account = {
-        accountName: accountName,
-        balance: balance,
+  const handleCreateAccount = async () => {
+    try {
+      let accountData = {
+        accountName,
+        balance,
         availableBalance: balance,
-        currency: currency,
+        currency,
       };
-      createAccount(account, accountType).then((response) => {
+
+      if (accountType === "Deposit") {
+        accountData = {
+          ...accountData,
+          withdrawalAccountId,
+          depositOptionID: selectedDepositOption.depositOptionID,
+        };
+      }
+
+      const response = await createAccount(accountData, accountType);
+
+      if (response.data.message === "success") {
         setAccountCreated(true);
-        if (response.data.message === "success") {
-          setAlertMessage("Account created successfully!");
-          setTimeout(() => {
-            handleClose();
-          }, 2000);
-        } else {
-          setAlertMessage(response.data.data.error);
-        }
-      });
-    } else if (accountType === "Deposit") {
-      const depositAccountData = {
-        accountName: accountName,
-        withdrawalAccountId: withdrawalAccountId,
-        balance: balance,
-        availableBalance: balance,
-        currency: currency,
-        depositOptionID: selectedDepositOption.depositOptionID,
-      };
-      createAccount(depositAccountData, accountType).then((response) => {
-        console.log(response);
-        if (response.data.message === "success") {
-          setAccountCreated(true);
-          setAlertMessage("Account created successfully!");
-          setTimeout(() => {
-            handleClose();
-          }, 2000);
-        } else {
-          setAlertMessage(response.data.data.error);
-        }
-      });
+        setAlertMessage("Account created successfully!");
+        setTimeout(() => {
+          handleClose();
+          const userID = document.cookie.split("=")[1];
+          getUserAccounts(userID)
+            .then((data) => {
+              setAccounts(data.data);
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        }, 2000);
+      } else {
+        setAlertMessage(response.data.data.error);
+      }
+    } catch (error) {
+      console.error(error);
+      setAlertMessage("An error occurred while creating the account.");
     }
   };
 
@@ -137,10 +143,10 @@ const AddAccountModal = ({ handleClose, accounts }) => {
         className="form-select"
         id="withdrawalAccountId"
         onChange={(e) => {
-          setWithdrawalAccountId(e.target.value);
           const selectedAccount = accounts.find(
             (account) => account.accountID.toString() === e.target.value
           );
+          setWithdrawalAccountId(e.target.value);
           setCurrency(selectedAccount.currency);
         }}
       >
@@ -160,34 +166,32 @@ const AddAccountModal = ({ handleClose, accounts }) => {
         <>
           {renderDepositOptionSelect()}
           {renderDepositOptionInfo()}
-          {selectedDepositOption && (
-            <>
-              <div className="mb-3">
-                <label htmlFor="accountName" className="form-label">
-                  Account Name
-                </label>
-                <input
-                  autoComplete="off"
-                  type="text"
-                  className="form-control"
-                  id="accountName"
-                  onChange={handleAccountNameChange}
-                />
-              </div>
-              {renderWithdrawalAccountSelect()}
-              <div className="mb-3">
-                <label htmlFor="balance" className="form-label">
-                  Balance
-                </label>
-                <input
-                  type="number"
-                  className="form-control"
-                  id="balance"
-                  onChange={(e) => setBalance(e.target.value)}
-                />
-              </div>
-            </>
-          )}
+          <div className="mb-3">
+            <label htmlFor="accountName" className="form-label">
+              Account Name
+            </label>
+            <input
+              autoComplete="off"
+              type="text"
+              className="form-control"
+              id="accountName"
+              value={accountName}
+              onChange={handleAccountNameChange}
+            />
+          </div>
+          {renderWithdrawalAccountSelect()}
+          <div className="mb-3">
+            <label htmlFor="balance" className="form-label">
+              Balance
+            </label>
+            <input
+              type="number"
+              className="form-control"
+              id="balance"
+              value={balance}
+              onChange={(e) => setBalance(e.target.value)}
+            />
+          </div>
         </>
       );
     } else if (accountType === "Checking") {
@@ -202,6 +206,7 @@ const AddAccountModal = ({ handleClose, accounts }) => {
               type="text"
               className="form-control"
               id="accountName"
+              value={accountName}
               onChange={(e) => setAccountName(e.target.value)}
             />
           </div>
@@ -213,6 +218,7 @@ const AddAccountModal = ({ handleClose, accounts }) => {
               <select
                 className="form-select"
                 id="currency"
+                value={currency}
                 onChange={(e) => setCurrency(e.target.value)}
               >
                 <option value="">Select Currency</option>
@@ -271,6 +277,7 @@ const AddAccountModal = ({ handleClose, accounts }) => {
               <select
                 className="form-select"
                 id="accountType"
+                value={accountType}
                 onChange={(e) => {
                   setAccountType(e.target.value);
                   setAccountName("");
@@ -278,11 +285,11 @@ const AddAccountModal = ({ handleClose, accounts }) => {
                   setBalance(0);
                   setWithdrawalAccountId("");
                   setSelectedDepositOption(null);
-                  setAlertMessage(""); // Clear previous alert message
+                  setAlertMessage("");
                 }}
               >
                 <option value="">Select Account Type</option>
-                {accountTypes.map((type) => (
+                {["Checking", "Deposit"].map((type) => (
                   <option key={type} value={type}>
                     {type}
                   </option>
