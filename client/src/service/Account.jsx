@@ -1,4 +1,4 @@
-import { patchAPI, deleteAPI } from "./BaseService";
+import { patchAPI, deleteAPI, postAPI } from "./BaseService";
 
 export const updateAccountName = async (accountID, accountName) => {
   try {
@@ -17,5 +17,15 @@ export const deleteAccount = async (accountID) => {
     return response.data;
   } catch (error) {
     throw error;
+  }
+};
+
+export const createAccount = async (account, type) => {
+  if (type === "Deposit") {
+    const response = await postAPI("api/accounts/deposit-accounts", account);
+    return response;
+  } else if (type === "Checking") {
+    const response = await postAPI("api/accounts/checking-accounts", account);
+    return response;
   }
 };
