@@ -84,6 +84,79 @@ export const logoutUser = async (req, res) => {
     res.status(500).json({ message: "Error logging out user." });
   }
 };
+//simdilik kullanmayacagiz routes >> usera bagli.
+export const getAllAccounts = async (req, res) => {
+  try {
+    // Retrieve all accounts from the database
+    const allAccounts = await AccountModel.find();
+
+    // Prepare response payload
+    const responseData = await Promise.all(
+      allAccounts.map(async (account) => {
+        const {
+          accountID,
+          accountName,
+          accountType,
+          iban,
+          balance,
+          availableBalance,
+          currency,
+          userID,
+          depositOption,
+          openDate,
+        } = account;
+
+        if (accountType === "Checking") {
+          return {
+            accountID,
+            accountName,
+            accountType,
+            iban,
+            balance: parseFloat(balance),
+            availableBalance: parseFloat(availableBalance),
+            currency,
+            userID,
+            openDate,
+          };
+        } else {
+          const depositOptionDetails = await DepositOptionModel.findById(
+            depositOption
+          );
+
+          return {
+            accountID,
+            accountName,
+            accountType,
+            iban,
+            balance: parseFloat(balance),
+            availableBalance: parseFloat(availableBalance),
+            currency,
+            userID,
+            depositOption: {
+              depositOptionName: depositOptionDetails.name,
+              depositOptionDescription: depositOptionDetails.description,
+              interestRate: parseFloat(depositOptionDetails.interestRate),
+              term: depositOptionDetails.term,
+            },
+            openDate,
+          };
+        }
+      })
+    );
+
+    // Respond with success message and all accounts
+    res.status(200).json({ message: "success", data: responseData });
+  } catch (error) {
+    console.error("Error retrieving accounts:", error);
+    res.status(500).json({
+      message: "fail",
+      data: {
+        error: "An error occurred while retrieving account information.",
+      },
+    });
+  }
+};
+
 
 export const getAccounts = async (req, res) => {
   try {

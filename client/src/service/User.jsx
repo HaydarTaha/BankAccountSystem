@@ -8,3 +8,14 @@ export const getUserAccounts = async (userID) => {
     throw error;
   }
 };
+
+export const getAllUserIbans = async () => {
+  try {
+    const response = await getAPI("/api/users/accounts");
+    const users = response.data.data;
+    const IBANs = users.map(user => user.iban); // Her bir kullanıcının userID'sini alın
+    return IBANs;
+  } catch (error) {
+    throw error;
+  }
+};

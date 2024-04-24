@@ -4,6 +4,7 @@ import {
   loginUser,
   logoutUser,
   getAccounts,
+  getAllAccounts,
   getAccountById,
   getCheckingAccountById,
   getCheckingAccountsByUserId,
@@ -54,6 +55,18 @@ router.get("/:userid/accounts", async (req, res) => {
     res.status(500).json({ message: "Internal server error." });
   }
 });
+
+// Endpoint to get all accounts for a user
+// su anlik kullanmayacagiz.
+router.get("/accounts", async (req, res) => {
+  try {
+    await getAllAccounts(req, res);
+  } catch (error) {
+    console.error("Error getting user accounts:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+});
+
 
 // Endpoint to get a specific account by accountID
 router.get("/:userid/accounts/:id", async (req, res) => {

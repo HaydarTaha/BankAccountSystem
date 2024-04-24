@@ -10,6 +10,7 @@ import Assets from "./pages/Assets";
 import { Logout } from "./service/AuthService";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import Invoices from "./pages/Invoices";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -36,7 +37,7 @@ function App() {
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
           <div className="container-fluid">
             <Link className="navbar-brand" to="/">
-              Bank Account System
+              Bank Account and Invoices System
             </Link>
             <button
               className="navbar-toggler"
@@ -69,6 +70,11 @@ function App() {
                     Assets
                   </Link>
                 </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/invoices">
+                    Invoices
+                  </Link>
+                </li>
               </ul>
               <button className="btn btn-outline-danger" onClick={handleLogout}>
                 Logout
@@ -83,11 +89,22 @@ function App() {
           <Route path="/account-list" element={<AccountList />} />
           <Route path="/transaction-history" element={<TransactionHistory />} />
           <Route path="/assets" element={<Assets />} />
+          <Route path="/invoices" element={<Invoices />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </section>
     </div>
   );
+  const Footer = () => {
+    return (
+      <footer className="footer mt-auto py-3 bg-light">
+        <div className="container text-center">
+          <span className="text-muted">© 2024 Bank Account and Invoices System. All rights reserved to Ömercan and Haydar Taha. </span>
+        </div>
+      </footer>
+    );
+  };
+  
 
   const unauthenticatedRoutes = (
     <Routes>
@@ -97,7 +114,12 @@ function App() {
     </Routes>
   );
 
-  return <div>{loggedIn ? authenticatedRoutes : unauthenticatedRoutes}</div>;
+  return (
+    <div>
+      {loggedIn ? authenticatedRoutes : unauthenticatedRoutes}
+      <Footer />
+    </div>
+  );
 }
 
 export default App;
