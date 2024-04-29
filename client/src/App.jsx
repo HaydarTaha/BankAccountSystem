@@ -66,11 +66,6 @@ function App() {
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/assets">
-                    Assets
-                  </Link>
-                </li>
-                <li className="nav-item">
                   <Link className="nav-link" to="/invoices">
                     Invoices
                   </Link>
@@ -88,7 +83,6 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/account-list" element={<AccountList />} />
           <Route path="/transaction-history" element={<TransactionHistory />} />
-          <Route path="/assets" element={<Assets />} />
           <Route path="/invoices" element={<Invoices />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>

@@ -208,7 +208,7 @@ const processZeroFrequencyInvoices = async () => {
                 console.log(`Account ${senderAccount.accountID} balance updated: ${senderAccount.balance}`);
       
                 // Alıcı IBAN'ına para ekleme işlemi
-                recipientAccount.balance += invoice.amount;
+                recipientAccount.balance = Number(recipientAccount.balance) + Number(invoice.amount);
                 await recipientAccount.save();
                 console.log(`Recipient account ${recipientAccount.iban} balance updated: ${recipientAccount.balance}`);
       

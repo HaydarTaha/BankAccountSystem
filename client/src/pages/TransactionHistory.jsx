@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { getAllTransactions, getFilteredTransactions } from "../service/Transaction";
 
-export default function TransactionHistory() {
+export default function TransactionHistory({ userID }) {
   const [transactions, setTransactions] = useState([]);
   const [filterType, setFilterType] = useState("");
   const [filterValue, setFilterValue] = useState("");
@@ -13,7 +13,7 @@ export default function TransactionHistory() {
 
   const loadTransactions = async () => {
     try {
-      const allTransactions = await getAllTransactions();
+      const allTransactions = await getAllTransactions(userID);
       setTransactions(allTransactions);
       setFilteredTransactions(allTransactions);
     } catch (error) {
@@ -32,14 +32,13 @@ export default function TransactionHistory() {
         // Filtre türü seçilmemişse, tüm işlemleri yeniden yükle
         loadTransactions();
       } else {
-        const filtered = await getFilteredTransactions(filterType, filterValue);
+        const filtered = await getFilteredTransactions(filterType, filterValue, userID);
         setFilteredTransactions(filtered);
       }
     } catch (error) {
       console.error("Error filtering transactions:", error);
     }
   };
-  
 
   return (
     <div className="container mt-5">
@@ -47,15 +46,15 @@ export default function TransactionHistory() {
       <form onSubmit={handleFilterSubmit} className="mb-3">
         <div className="row">
           <div className="col-md-4">
-          <select value={filterType} onChange={handleFilterChange} className="form-select">
-            <option value="">Filtreleme Türü Seçin</option>
-            <option value="senderAccountID">Gönderen Hesap ID'si</option>
-            <option value="receiverAccountID">Alıcı Hesap ID'si</option>
-            <option value="amount">Miktar</option>
-            <option value="transactionType">İşlem Türü</option>
-            <option value="description">Açıklama</option>
-            <option value="date">Tarih</option>
-          </select>
+            <select value={filterType} onChange={handleFilterChange} className="form-select">
+              <option value="">Filtreleme Türü Seçin</option>
+              <option value="senderAccountID">Gönderen Hesap ID'si</option>
+              <option value="receiverAccountID">Alıcı Hesap ID'si</option>
+              <option value="amount">Miktar</option>
+              <option value="transactionType">İşlem Türü</option>
+              <option value="description">Açıklama</option>
+              <option value="date">Tarih</option>
+            </select>
           </div>
           <div className="col-md-4">
             <input
@@ -87,17 +86,17 @@ export default function TransactionHistory() {
                   </tr>
                 </thead>
                 <tbody>
-                {filteredTransactions.map((transaction) => (
-                  <tr key={transaction._id}>
-                    <td>{transaction.senderAccountID}</td>
-                    <td>{transaction.receiverAccountID}</td>
-                    <td>{new Date(transaction.date).toLocaleString()}</td>
-                    <td>{transaction.amount["$numberDecimal"]}</td>
-                    <td>{transaction.transactionType}</td>
-                    <td>{transaction.description}</td>
-                  </tr>
-                ))}
-              </tbody>
+                  {filteredTransactions.map((transaction) => (
+                    <tr key={transaction._id}>
+                      <td>{transaction.senderAccountID}</td>
+                      <td>{transaction.receiverAccountID}</td>
+                      <td>{new Date(transaction.date).toLocaleString()}</td>
+                      <td>{transaction.amount["$numberDecimal"]}</td>
+                      <td>{transaction.transactionType}</td>
+                      <td>{transaction.description}</td>
+                    </tr>
+                  ))}
+                </tbody>
               </table>
             </div>
           </div>
