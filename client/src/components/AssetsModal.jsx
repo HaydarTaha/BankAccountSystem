@@ -1,25 +1,25 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { getUserAccounts } from "../service/User";
 
 const AssetsModal = ({ handleClose }) => {
-  const [accounts, setAccounts] = React.useState([]);
-  const [isLoading, setIsLoading] = React.useState(true);
+  const [accounts, setAccounts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const currencySymbols = {
     USD: "$",
     EUR: "€",
     TRY: "₺",
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     const userID = document.cookie.split("=")[1];
     getUserAccounts(userID)
-      .then((data) => {
-        setAccounts(data.data);
-        setIsLoading(false); // Turn off loading animation when data is fetched
+      .then(({ data }) => {
+        setAccounts(data);
+        setIsLoading(false);
       })
       .catch((error) => {
         console.error(error);
-        setIsLoading(false); // Turn off loading animation in case of error
+        setIsLoading(false);
       });
   }, []);
 
@@ -61,7 +61,10 @@ const AssetsModal = ({ handleClose }) => {
                 {currencySymbols[currency]}
                 {isLoading
                   ? "Loading..."
-                  : calculateTotalAssets(currency).toLocaleString()}
+                  : calculateTotalAssets(currency).toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
               </p>
             </div>
           ))}
@@ -70,10 +73,10 @@ const AssetsModal = ({ handleClose }) => {
     );
   };
 
-  const renderTotalCheckingAccountAssets = () => {
+  const renderTotalAccountAssets = (title, filterType) => {
     return (
       <div className="mb-4">
-        <h5 className="mb-3">Total Checking Account Assets</h5>
+        <h5 className="mb-3">{title}</h5>
         <div className="list-group">
           {Object.keys(currencySymbols).map((currency) => (
             <div
@@ -85,31 +88,13 @@ const AssetsModal = ({ handleClose }) => {
                 {currencySymbols[currency]}
                 {isLoading
                   ? "Loading..."
-                  : calculateTotalAssets(currency, "Checking").toLocaleString()}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  };
-
-  const renderTotalDepositAccountAssets = () => {
-    return (
-      <div className="mb-4">
-        <h5 className="mb-3">Total Deposit Account Assets</h5>
-        <div className="list-group">
-          {Object.keys(currencySymbols).map((currency) => (
-            <div
-              key={currency}
-              className="list-group-item d-flex justify-content-between align-items-center"
-            >
-              <p className="m-0">{currency} Total Assets</p>
-              <p className="m-0 font-weight-bold">
-                {currencySymbols[currency]}
-                {isLoading
-                  ? "Loading..."
-                  : calculateTotalAssets(currency, "Deposit").toLocaleString()}
+                  : calculateTotalAssets(currency, filterType).toLocaleString(
+                      undefined,
+                      {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      }
+                    )}
               </p>
             </div>
           ))}
@@ -143,8 +128,14 @@ const AssetsModal = ({ handleClose }) => {
           </div>
           <div className="modal-body">
             {renderTotalAssetsByCurrency()}
-            {renderTotalCheckingAccountAssets()}
-            {renderTotalDepositAccountAssets()}
+            {renderTotalAccountAssets(
+              "Total Checking Account Assets",
+              "Checking"
+            )}
+            {renderTotalAccountAssets(
+              "Total Deposit Account Assets",
+              "Deposit"
+            )}
           </div>
         </div>
       </div>
