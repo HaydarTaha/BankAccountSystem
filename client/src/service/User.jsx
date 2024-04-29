@@ -19,3 +19,15 @@ export const getAllUserIbans = async () => {
     throw error;
   }
 };
+
+// Kullanıcının adını ve soyadını getiren fonksiyon
+export const getNameSurname = async (userID) => {
+  try {
+    const response = await getAPI(`/api/users/${userID}/namesurname`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+

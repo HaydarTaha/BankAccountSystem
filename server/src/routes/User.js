@@ -12,6 +12,7 @@ import {
   getDepositAccountsByUserId,
   getAccountTransactions,
   getTransactionById,
+  getNameSurnameById
 } from "../controllers/User.js";
 
 const router = express.Router();
@@ -22,6 +23,16 @@ router.post("/register", async (req, res) => {
     await createUser(req, res);
   } catch (error) {
     console.error("Error registering user:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+});
+
+// Endpoint to get user's name and surname by ID
+router.get("/:userid/namesurname", async (req, res) => {
+  try {
+    await getNameSurnameById(req, res);
+  } catch (error) {
+    console.error("Error getting user's name and surname by ID:", error);
     res.status(500).json({ message: "Internal server error." });
   }
 });

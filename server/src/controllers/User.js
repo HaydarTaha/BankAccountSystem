@@ -158,6 +158,28 @@ export const getAllAccounts = async (req, res) => {
   }
 };
 
+export const getNameSurnameById = async (req, res) => {
+  try {
+
+    const userId = req.headers.cookie.split("=")[1];
+
+    // Veritabanından kullanıcıyı ID'ye göre bul
+    const user = await UserModel.findById(userId);
+
+    // Kullanıcı bulunamazsa hata döndürülür
+    if (!user) {
+      return res.status(404).json({ message: "Kullanıcı bulunamadı." });
+    }
+
+    // Kullanıcının adı ve soyadı alınır ve yanıt olarak gönderilir
+    const { name, surname } = user;
+    res.status(200).json({ name, surname });
+  } catch (error) {
+    console.error("ID'ye göre kullanıcı adı ve soyadı alınırken hata oluştu:", error);
+    res.status(500).json({ message: "Sunucu hatası." });
+  }
+};
+
 export const getAccounts = async (req, res) => {
   try {
     const userId = req.params.userid;
