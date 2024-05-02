@@ -9,18 +9,15 @@ export const getUserAccounts = async (userID) => {
   }
 };
 
-export const getAllUserIbans = async () => {
+export const getUserRole = async (userID) => {
   try {
-    const response = await getAPI("/api/users/accounts");
-    const users = response.data.data;
-    const IBANs = users.map((user) => user.iban); // Her bir kullanıcının userID'sini alın
-    return IBANs;
+    const response = await getAPI(`/api/users/${userID}/role`);
+    return response.data;
   } catch (error) {
     throw error;
   }
 };
 
-// Kullanıcının adını ve soyadını getiren fonksiyon
 export const getNameSurname = async (userID) => {
   try {
     const response = await getAPI(`/api/users/${userID}/name-surname`);
