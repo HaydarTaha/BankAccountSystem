@@ -11,7 +11,6 @@ function HomePage() {
     getNameSurname(userID)
       .then((data) => {
         setNameSurname(data.name + " " + data.surname);
-        console.log(nameSurname);
         setIsLoading(false);
       })
       .catch((error) => {
@@ -23,11 +22,7 @@ function HomePage() {
   return (
     <div>
       <h1>Welcome, {nameSurname}</h1>
-      {isLoading ? (
-        <p>Loading...</p>
-      ) : (
-        <p>This is your home page.</p>
-      )}
+      {isLoading ? <p>Loading...</p> : <p>This is your home page.</p>}
     </div>
   );
 }
