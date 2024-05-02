@@ -6,6 +6,7 @@ import cors from "cors";
 import { userRoutes } from "./routes/User.js";
 import { accountRoutes } from "./routes/Account.js";
 import { depositOptionRoutes } from "./routes/Deposit_Option.js";
+import { crudRoutes } from "./routes/Crud.js";
 
 // Models
 import User from "./models/User.js";
@@ -76,6 +77,7 @@ app.use((req, res, next) => {
 app.use("/api/users", userRoutes);
 app.use("/api/accounts", accountRoutes);
 app.use("/api/deposit-options", depositOptionRoutes);
+app.use("/api/crud", crudRoutes);
 
 // Invalid Path Handler
 app.use((req, res, next) => {
