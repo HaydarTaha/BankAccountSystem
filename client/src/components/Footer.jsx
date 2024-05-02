@@ -10,7 +10,7 @@ const Footer = () => {
         style={{ cursor: "pointer" }}
       >
         {" "}
-        Ömercan
+        Ömercan Sabun
       </span>{" "}
       and{" "}
       <span
@@ -18,7 +18,7 @@ const Footer = () => {
         onClick={() => window.open("https://github.com/HaydarTaha")}
         style={{ cursor: "pointer" }}
       >
-        Haydar Taha
+        Haydar Taha Tunç
       </span>
       .
     </footer>
