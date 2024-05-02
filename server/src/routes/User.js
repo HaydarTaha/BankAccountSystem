@@ -4,6 +4,7 @@ import {
   loginUser,
   logoutUser,
   getNameSurnameById,
+  getUserRoleById,
   getAccounts,
   getAccountById,
   getCheckingAccountById,
@@ -52,6 +53,16 @@ router.delete("/logout", async (req, res) => {
     await logoutUser(req, res);
   } catch (error) {
     console.error("Error logging out user:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+});
+
+// Endpoint to get user's role by ID
+router.get("/:userid/role", async (req, res) => {
+  try {
+    await getUserRoleById(req, res);
+  } catch (error) {
+    console.error("Error getting user's role by ID:", error);
     res.status(500).json({ message: "Internal server error." });
   }
 });
