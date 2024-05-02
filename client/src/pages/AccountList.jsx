@@ -40,6 +40,17 @@ const AccountList = () => {
       });
   };
 
+  if (isLoading) {
+    // Bootstrap Spinner
+    return (
+      <div className="d-flex justify-content-center mt-5">
+        <div className="spinner-border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="mb-3">
       <h1>Account List</h1>
@@ -72,21 +83,14 @@ const AccountList = () => {
           />
         )}
       </div>
-      {isLoading ? ( // Conditional rendering for loading animation
-        <div className="text-center">
-          <div className="spinner-border" role="status">
-            <span className="visually-hidden">Loading...</span>
+
+      <div className="row">
+        {accounts.map((account) => (
+          <div key={account.accountID} className="col-md-6 mb-3">
+            <AccountCard account={account} removeAccount={removeAccount} />
           </div>
-        </div>
-      ) : (
-        <div className="row">
-          {accounts.map((account) => (
-            <div key={account.accountID} className="col-md-6 mb-3">
-              <AccountCard account={account} removeAccount={removeAccount} />
-            </div>
-          ))}
-        </div>
-      )}
+        ))}
+      </div>
     </div>
   );
 };
