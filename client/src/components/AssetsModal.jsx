@@ -1,14 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { getUserAccounts } from "../service/User";
+import currencySymbols from "../constants/currencySymbols.js";
 
 const AssetsModal = ({ handleClose }) => {
   const [accounts, setAccounts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const currencySymbols = {
-    USD: "$",
-    EUR: "€",
-    TRY: "₺",
-  };
 
   useEffect(() => {
     const userID = document.cookie.split("=")[1];
