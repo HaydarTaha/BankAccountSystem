@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
-const Navbar = ({ handleLogout }) => {
+const Navbar = ({ handleLogout, userRole }) => {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
       <div className="container-fluid">
@@ -34,6 +34,13 @@ const Navbar = ({ handleLogout }) => {
                 Transactions
               </Link>
             </li>
+            {userRole === "Admin" && (
+              <li className="nav-item">
+                <Link className="nav-link" to="/admin">
+                  Admin
+                </Link>
+              </li>
+            )}
           </ul>
           <button className="btn btn-outline-danger" onClick={handleLogout}>
             Logout
