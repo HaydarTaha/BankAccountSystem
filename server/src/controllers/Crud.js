@@ -23,34 +23,30 @@ const getResources = async (req, res, Model) => {
 
 const updateResource = async (req, res, Model) => {
   const { id } = req.params;
+  const { body } = req;
   try {
-    const [updated] = await Model.update(req.body, {
-      where: { id: id },
-    });
-    if (updated) {
-      const updatedResource = await Model.findOne({ where: { id: id } });
-      res.status(200).json(updatedResource);
-    } else {
-      res.status(404).json({ message: `${Model.name} not found` });
+    const resource = await Model.findByPk(id);
+    if (!resource) {
+      return res.status(404).json({ message: "Resource not found" });
     }
+    await resource.update(body);
+    res.status(200).json(resource);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: error.message });
   }
 };
 
 const deleteResource = async (req, res, Model) => {
   const { id } = req.params;
   try {
-    const deleted = await Model.destroy({
-      where: { id: id },
-    });
-    if (deleted) {
-      res.status(204).send();
-    } else {
-      res.status(404).json({ message: `${Model.name} not found` });
+    const resource = await Model.findByPk(id);
+    if (!resource) {
+      return res.status(404).json({ message: "Resource not found" });
     }
+    await resource.destroy();
+    res.status(204).end();
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: error.message });
   }
 };
 
