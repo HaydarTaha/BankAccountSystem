@@ -15,7 +15,7 @@ const AssetsModal = ({ handleClose }) => {
     getUserAccounts(userID)
       .then(({ data }) => {
         setAccounts(data);
-        setIsLoading(false);
+        //setIsLoading(false);
       })
       .catch((error) => {
         console.error(error);
@@ -46,6 +46,12 @@ const AssetsModal = ({ handleClose }) => {
     );
   };
 
+  const Spinner = () => (
+    <div className="spinner-border spinner-border-sm" role="status">
+      <span className="visually-hidden">Loading...</span>
+    </div>
+  );
+
   const renderTotalAssetsByCurrency = () => {
     return (
       <div className="mb-4">
@@ -58,13 +64,17 @@ const AssetsModal = ({ handleClose }) => {
             >
               <p className="m-0">{currency} Total Assets</p>
               <p className="m-0 font-weight-bold">
-                {currencySymbols[currency]}
-                {isLoading
-                  ? "Loading..."
-                  : calculateTotalAssets(currency).toLocaleString(undefined, {
+                {isLoading ? (
+                  <Spinner />
+                ) : (
+                  <>
+                    {currencySymbols[currency]}
+                    {calculateTotalAssets(currency).toLocaleString(undefined, {
                       minimumFractionDigits: 2,
                       maximumFractionDigits: 2,
                     })}
+                  </>
+                )}
               </p>
             </div>
           ))}
@@ -85,16 +95,20 @@ const AssetsModal = ({ handleClose }) => {
             >
               <p className="m-0">{currency} Total Assets</p>
               <p className="m-0 font-weight-bold">
-                {currencySymbols[currency]}
-                {isLoading
-                  ? "Loading..."
-                  : calculateTotalAssets(currency, filterType).toLocaleString(
+                {isLoading ? (
+                  <Spinner />
+                ) : (
+                  <>
+                    {currencySymbols[currency]}
+                    {calculateTotalAssets(currency, filterType).toLocaleString(
                       undefined,
                       {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2,
                       }
                     )}
+                  </>
+                )}
               </p>
             </div>
           ))}
@@ -114,6 +128,12 @@ const AssetsModal = ({ handleClose }) => {
         height: "100%",
       }}
       onClick={handleCloseOutside}
+      // on esc key press close the modal
+      onKeyDown={(e) => {
+        if (e.key === "Escape") {
+          handleCloseOutside;
+        }
+      }}
     >
       <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content">
