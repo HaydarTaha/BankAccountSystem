@@ -15,7 +15,7 @@ const AssetsModal = ({ handleClose }) => {
     getUserAccounts(userID)
       .then(({ data }) => {
         setAccounts(data);
-        //setIsLoading(false);
+        setIsLoading(false);
       })
       .catch((error) => {
         console.error(error);
