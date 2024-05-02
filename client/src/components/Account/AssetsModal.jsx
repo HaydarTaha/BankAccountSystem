@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { getUserAccounts } from "../service/User";
-import currencySymbols from "../constants/currencySymbols.js";
+import { getUserAccounts } from "../../service/User.jsx";
+import currencySymbols from "../../constants/currencySymbols.js";
 
 const AssetsModal = ({ handleClose }) => {
   const [accounts, setAccounts] = useState([]);

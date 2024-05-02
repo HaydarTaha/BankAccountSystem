@@ -47,7 +47,9 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/account-list" element={<AccountList />} />
           <Route path="/transactions" element={<Transactions />} />
-          {userRole === "Admin" && <Route path="/admin" element={<Admin />} />}
+          {userRole === "Admin" && (
+            <Route path="/admin/:page" element={<Admin />} />
+          )}
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </section>

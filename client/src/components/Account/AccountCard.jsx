@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { updateAccountName } from "../service/Account";
-import currencySymbols from "../constants/currencySymbols";
+import { updateAccountName } from "../../service/Account";
+import currencySymbols from "../../constants/currencySymbols";
 
 const AccountCard = ({ account, removeAccount }) => {
   // State for hover effect and modal visibility

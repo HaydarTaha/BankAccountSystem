@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 
 const Navbar = ({ handleLogout, userRole }) => {
@@ -36,8 +36,8 @@ const Navbar = ({ handleLogout, userRole }) => {
             </li>
             {userRole === "Admin" && (
               <li className="nav-item">
-                <Link className="nav-link" to="/admin">
-                  Admin
+                <Link className="nav-link" to="/admin/users">
+                  Admin Panel
                 </Link>
               </li>
             )}

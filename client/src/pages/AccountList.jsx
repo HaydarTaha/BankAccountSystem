@@ -2,9 +2,9 @@
 import React, { useState } from "react";
 import { getUserAccounts } from "../service/User";
 import { deleteAccount } from "../service/Account";
-import AccountCard from "../components/AccountCard";
-import AddAccountModal from "../components/AddAccountModal";
-import AssetsModal from "../components/AssetsModal";
+import AccountCard from "../components/Account/AccountCard";
+import AddAccountModal from "../components/Account/AddAccountModal";
+import AssetsModal from "../components/Account/AssetsModal";
 
 // Account list component
 const AccountList = () => {

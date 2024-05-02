@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { getDepositOptions } from "../service/DepositOption";
-import { getUserAccounts } from "../service/User";
-import { createAccount } from "../service/Account";
+import { getDepositOptions } from "../../service/DepositOption";
+import { getUserAccounts } from "../../service/User";
+import { createAccount } from "../../service/Account";
 
 const AddAccountModal = ({ handleClose, accounts, setAccounts }) => {
   const [depositOptions, setDepositOptions] = useState([]);
@@ -11,7 +11,6 @@ const AddAccountModal = ({ handleClose, accounts, setAccounts }) => {
   const [withdrawalAccountId, setWithdrawalAccountId] = useState("");
   const [balance, setBalance] = useState(0);
   const [currency, setCurrency] = useState("");
-  const [accountCreated, setAccountCreated] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
 
   useEffect(() => {
@@ -64,7 +63,6 @@ const AddAccountModal = ({ handleClose, accounts, setAccounts }) => {
       const response = await createAccount(accountData, accountType);
 
       if (response.data.message === "success") {
-        setAccountCreated(true);
         setAlertMessage("Account created successfully!");
         setTimeout(() => {
           handleClose();
