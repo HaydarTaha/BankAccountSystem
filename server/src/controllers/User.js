@@ -106,6 +106,26 @@ export const getNameSurnameById = async (req, res) => {
   }
 };
 
+export const getUserRoleById = async (req, res) => {
+  try {
+    const userId = req.params.userid;
+
+    // Get user by ID
+    const user = await User.findByPk(userId);
+
+    // Check if user exists
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    // Respond with user's role
+    res.status(200).json({ role: user.role });
+  } catch (error) {
+    console.error("Error getting user's role by ID:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+};
+
 export const getAccounts = async (req, res) => {
   try {
     const userId = req.params.userid;
