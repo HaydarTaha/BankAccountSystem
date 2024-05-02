@@ -21,8 +21,13 @@ function HomePage() {
 
   return (
     <div>
-      <h1>Welcome, {nameSurname}</h1>
-      {isLoading ? <p>Loading...</p> : <p>This is your home page.</p>}
+      {isLoading ? (
+        <div className="spinner-border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      ) : (
+        <h1>Welcome, {nameSurname}</h1>
+      )}
     </div>
   );
 }
