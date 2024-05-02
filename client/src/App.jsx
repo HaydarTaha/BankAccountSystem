@@ -5,19 +5,30 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Home from "./pages/Home";
 import AccountList from "./pages/AccountList";
+import Transactions from "./pages/Transactions";
+import Admin from "./pages/Admin";
 import { Logout } from "./service/AuthService";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
+import { getUserRole } from "./service/User";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
+  const [userRole, setUserRole] = useState("");
 
   React.useEffect(() => {
     const cookie = document.cookie;
     if (cookie.includes("user")) {
       setLoggedIn(true);
+      const userID = cookie.split("=")[1];
+      getRole(userID);
     }
   }, []);
+
+  const getRole = async (userID) => {
+    const response = await getUserRole(userID);
+    setUserRole(response.role);
+  };
 
   const handleLogout = async () => {
     const response = await Logout();
@@ -30,11 +41,13 @@ function App() {
 
   const authenticatedRoutes = (
     <div>
-      <Navbar handleLogout={handleLogout} />
+      <Navbar handleLogout={handleLogout} userRole={userRole} />
       <section className="container mt-4">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/account-list" element={<AccountList />} />
+          <Route path="/transactions" element={<Transactions />} />
+          {userRole === "Admin" && <Route path="/admin" element={<Admin />} />}
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </section>
