@@ -124,12 +124,6 @@ const AssetsModal = ({ handleClose }) => {
         height: "100%",
       }}
       onClick={handleCloseOutside}
-      // on esc key press close the modal
-      onKeyDown={(e) => {
-        if (e.key === "Escape") {
-          handleCloseOutside;
-        }
-      }}
     >
       <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content">
