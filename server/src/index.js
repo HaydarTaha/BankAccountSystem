@@ -22,7 +22,7 @@ app.use(express.json());
 
 const corsOptions = {
   credentials: true,
-  origin: "http://localhost:3001",
+  origin: ["http://localhost:3000", "http://10.125.23.145:3000/"],
 };
 app.use(cors(corsOptions));
 
