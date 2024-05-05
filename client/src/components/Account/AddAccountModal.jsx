@@ -27,10 +27,10 @@ const AddAccountModal = ({ handleClose, accounts, setAccounts }) => {
   }, []);
 
   const handleSelectDepositOption = (optionId) => {
-    const option = depositOptions.find(
-      (option) => option.depositOptionID === optionId
+    const selectedOption = depositOptions.find(
+      (option) => option.depositOptionID.toString() === optionId
     );
-    setSelectedDepositOption(option);
+    setSelectedDepositOption(selectedOption);
   };
 
   const handleCloseOutside = (e) => {
@@ -164,32 +164,36 @@ const AddAccountModal = ({ handleClose, accounts, setAccounts }) => {
         <>
           {renderDepositOptionSelect()}
           {renderDepositOptionInfo()}
-          <div className="mb-3">
-            <label htmlFor="accountName" className="form-label">
-              Account Name
-            </label>
-            <input
-              autoComplete="off"
-              type="text"
-              className="form-control"
-              id="accountName"
-              value={accountName}
-              onChange={handleAccountNameChange}
-            />
-          </div>
-          {renderWithdrawalAccountSelect()}
-          <div className="mb-3">
-            <label htmlFor="balance" className="form-label">
-              Balance
-            </label>
-            <input
-              type="number"
-              className="form-control"
-              id="balance"
-              value={balance}
-              onChange={(e) => setBalance(e.target.value)}
-            />
-          </div>
+          {selectedDepositOption && (
+            <div className="mb-3">
+              <label htmlFor="accountName" className="form-label">
+                Account Name
+              </label>
+              <input
+                autoComplete="off"
+                type="text"
+                className="form-control"
+                id="accountName"
+                value={accountName}
+                onChange={handleAccountNameChange}
+              />
+            </div>
+          )}
+          {accountName && renderWithdrawalAccountSelect()}
+          {withdrawalAccountId && (
+            <div className="mb-3">
+              <label htmlFor="balance" className="form-label">
+                Balance
+              </label>
+              <input
+                type="number"
+                className="form-control"
+                id="balance"
+                value={balance}
+                onChange={(e) => setBalance(Math.max(0, e.target.value))}
+              />
+            </div>
+          )}
         </>
       );
     } else if (accountType === "Checking") {
@@ -279,11 +283,10 @@ const AddAccountModal = ({ handleClose, accounts, setAccounts }) => {
                 onChange={(e) => {
                   setAccountType(e.target.value);
                   setAccountName("");
-                  setCurrency("");
-                  setBalance(0);
                   setWithdrawalAccountId("");
+                  setBalance(0);
+                  setCurrency("");
                   setSelectedDepositOption(null);
-                  setAlertMessage("");
                 }}
               >
                 <option value="">Select Account Type</option>
