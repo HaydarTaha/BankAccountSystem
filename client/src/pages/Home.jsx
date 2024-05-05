@@ -8,6 +8,8 @@ function HomePage() {
   useEffect(() => {
     const userID = document.cookie.split("=")[1];
 
+    console.log(userID);
+
     getNameSurname(userID)
       .then((data) => {
         setNameSurname(data.name + " " + data.surname);
