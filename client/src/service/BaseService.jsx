@@ -34,8 +34,8 @@ export async function putAPI(url, data) {
   return callApi("put", url, data);
 }
 
-export async function deleteAPI(url) {
-  return callApi("delete", url);
+export async function deleteAPI(url, data) {
+  return callApi("delete", url, data);
 }
 
 export async function patchAPI(url, data) {

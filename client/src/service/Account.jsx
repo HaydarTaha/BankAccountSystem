@@ -1,4 +1,4 @@
-import { patchAPI, deleteAPI, postAPI } from "./BaseService";
+import { patchAPI, postAPI, putAPI } from "./BaseService";
 
 export const updateAccountName = async (accountID, accountName) => {
   try {
@@ -11,9 +11,11 @@ export const updateAccountName = async (accountID, accountName) => {
   }
 };
 
-export const deleteAccount = async (accountID) => {
+export const deleteAccount = async (accountID, accountToTransfer) => {
   try {
-    const response = await deleteAPI(`/api/accounts/${accountID}`);
+    const response = await putAPI(`/api/accounts/${accountID}`, {
+      accountToTransfer: accountToTransfer,
+    });
     return response.data;
   } catch (error) {
     throw error;

@@ -47,6 +47,14 @@ export const createCheckingAccount = async (req, res) => {
 export const deleteAccountById = async (req, res) => {
   try {
     const { accountID } = req.params;
+    const { accountToTransfer } = req.body;
+
+    if (!accountToTransfer) {
+      return res.status(422).json({
+        message: "fail",
+        data: { error: "Missing accountToTransfer field in request body." },
+      });
+    }
 
     // Check if the account exists
     const existingAccount = await Account.findOne({
@@ -58,6 +66,33 @@ export const deleteAccountById = async (req, res) => {
         data: { error: "Account not found." },
       });
     }
+
+    // Check if the account to transfer exists
+    const transferAccount = await Account.findOne({
+      where: { account_id: accountToTransfer },
+    });
+
+    if (!transferAccount) {
+      return res.status(422).json({
+        message: "fail",
+        data: { error: "Account to transfer not found." },
+      });
+    }
+
+    // Transfer the balance and available balance to the account to transfer, type for balance and available balance is string
+    transferAccount.balance = (
+      parseFloat(transferAccount.balance) + parseFloat(existingAccount.balance)
+    ).toString();
+    transferAccount.available_balance = (
+      parseFloat(transferAccount.available_balance) +
+      parseFloat(existingAccount.available_balance)
+    ).toString();
+
+    console.log(transferAccount.balance);
+    console.log(transferAccount.available_balance);
+
+    // Save the updated transfer account
+    await transferAccount.save();
 
     // Delete the account from the database
     await Account.destroy({ where: { account_id: accountID } });

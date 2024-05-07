@@ -5,6 +5,7 @@ import { deleteAccount } from "../service/Account";
 import AccountCard from "../components/Account/AccountCard";
 import AddAccountModal from "../components/Account/AddAccountModal";
 import AssetsModal from "../components/Account/AssetsModal";
+import Swal from "sweetalert2";
 
 // Account list component
 const AccountList = () => {
@@ -28,16 +29,83 @@ const AccountList = () => {
   }, []);
 
   // Remove Account from the list
-  const removeAccount = (accountID) => {
-    deleteAccount(accountID)
-      .then(() => {
-        setAccounts(
-          accounts.filter((account) => account.accountID !== accountID)
-        );
-      })
-      .catch((error) => {
-        console.error(error);
+  const removeAccount = async (accountID) => {
+    const account = accounts.find((acc) => acc.accountID === accountID);
+    const checkingAccountsCount = accounts.filter(
+      (acc) => acc.accountType === "Checking"
+    ).length;
+    const sameCurrencyAccounts = accounts.filter(
+      (acc) => acc.currency === account.currency && acc.accountID !== accountID
+    );
+
+    // If there is no other account with the same currency, return
+    if (sameCurrencyAccounts.length === 0) {
+      Swal.fire({
+        icon: "error",
+        title: "Cannot delete account",
+        text: "At least one account with the same currency is required",
+        timer: 2000,
+        timerProgressBar: true,
+        showConfirmButton: false,
       });
+      return;
+    }
+
+    if (checkingAccountsCount === 1 && account.accountType === "Checking") {
+      Swal.fire({
+        icon: "error",
+        title: "Cannot delete account",
+        text: "At least one Checking account is required",
+        timer: 2000,
+        timerProgressBar: true,
+        showConfirmButton: false,
+      });
+      return;
+    }
+
+    const { value: accountToTransfer } = await Swal.fire({
+      title: "Select account to transfer balance",
+      input: "select",
+      // Show all Checking accounts except the current accountName if it is a Checking account, otherwise show all Checking accountsName
+      inputOptions: {
+        ...accounts
+          .filter(
+            (acc) =>
+              acc.accountType === "Checking" &&
+              acc.accountID !== accountID &&
+              acc.currency === account.currency
+          )
+          .reduce((acc, curr) => {
+            acc[curr.accountID] = curr.accountName;
+            return acc;
+          }, {}),
+      },
+      inputPlaceholder: "Select account",
+      showCancelButton: true,
+      // if cancel button is clicked, return the accountToTransfer as null
+      cancelButtonText: "Cancel",
+    });
+
+    if (accountToTransfer === undefined || accountToTransfer === "") {
+      return;
+    }
+
+    if (accountToTransfer) {
+      deleteAccount(accountID, accountToTransfer)
+        .then(() => {
+          // Get updated accounts
+          getUserAccounts(document.cookie.split("=")[1])
+            .then((data) => {
+              setAccounts(data.data);
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
   };
 
   if (isLoading) {

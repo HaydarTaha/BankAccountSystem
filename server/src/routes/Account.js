@@ -19,7 +19,7 @@ router.post("/checking-accounts", async (req, res) => {
 });
 
 // Endpoint to delete an account by accountID
-router.delete("/:accountID", async (req, res) => {
+router.put("/:accountID", async (req, res) => {
   try {
     await deleteAccountById(req, res);
   } catch (error) {
