@@ -29,11 +29,6 @@ const Navbar = ({ handleLogout, userRole }) => {
                 Account List
               </Link>
             </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/transactions">
-                Transactions
-              </Link>
-            </li>
             {userRole === "Admin" && (
               <li className="nav-item">
                 <Link className="nav-link" to="/admin/users">
