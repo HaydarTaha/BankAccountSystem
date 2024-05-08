@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { updateAccountName } from "../../service/Account";
 import currencySymbols from "../../constants/currencySymbols";
+import TransactionTableModal from "../Transaction/TransactionModal";
 
 const AccountCard = ({ account, removeAccount }) => {
   // State for hover effect and modal visibility
   const [isHovered, setIsHovered] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [showTransactionModal, setShowTransactionModal] = useState(false);
 
   // State for editable account name and edit mode
   const [editableAccountName, setEditableAccountName] = useState(
@@ -26,6 +28,13 @@ const AccountCard = ({ account, removeAccount }) => {
       setIsHovered(false);
       setIsEditing(false);
       setEditableAccountName(account.accountName);
+    }
+  };
+
+  // Close modal when clicked outside
+  const handleCloseTransactionModal = (e) => {
+    if (e.target === e.currentTarget) {
+      setShowTransactionModal(false);
     }
   };
 
@@ -155,7 +164,10 @@ const AccountCard = ({ account, removeAccount }) => {
                     <i className="bi bi-file-earmark-text me-1"></i>
                     Monthly Account Statement
                   </button>
-                  <button className="btn btn-primary">
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => setShowTransactionModal(true)}
+                  >
                     <i className="bi bi-journal-text me-1"></i>
                     Transaction History
                   </button>
@@ -167,6 +179,35 @@ const AccountCard = ({ account, removeAccount }) => {
                     Close Account
                   </button>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {showTransactionModal && (
+        <div
+          className="modal show d-flex align-items-center justify-content-center"
+          tabIndex="-1"
+          style={{
+            display: "block",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            width: "100%",
+            height: "100%",
+          }}
+          onClick={handleCloseTransactionModal}
+        >
+          <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Transaction History</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => setShowTransactionModal(false)}
+                ></button>
+              </div>
+              <div className="modal-body">
+                <TransactionTableModal accountID={account.accountID} />
               </div>
             </div>
           </div>
