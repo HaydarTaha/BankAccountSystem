@@ -18,7 +18,7 @@ const Transaction = sequelize.define(
       comment: "ID of the sender account",
       references: {
         model: "accounts",
-        key: "id",
+        key: "account_id",
       },
     },
     receiver_account_id: {
@@ -27,7 +27,7 @@ const Transaction = sequelize.define(
       comment: "ID of the receiver account",
       references: {
         model: "accounts",
-        key: "id",
+        key: "account_id",
       },
     },
     date: {
