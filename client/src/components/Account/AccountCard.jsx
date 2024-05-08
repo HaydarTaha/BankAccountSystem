@@ -160,7 +160,8 @@ const AccountCard = ({ account, removeAccount }) => {
                 </div>
 
                 <div className="d-grid gap-2">
-                  <button className="btn btn-success">
+                  {/* Hide the button for future implementation */}
+                  <button className="btn btn-success" hidden>
                     <i className="bi bi-file-earmark-text me-1"></i>
                     Monthly Account Statement
                   </button>
