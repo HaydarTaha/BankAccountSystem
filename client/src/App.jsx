@@ -5,7 +5,6 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Home from "./pages/Home";
 import AccountList from "./pages/AccountList";
-import Transactions from "./pages/Transactions";
 import Admin from "./pages/Admin";
 import { Logout } from "./service/AuthService";
 import Footer from "./components/Footer";
@@ -46,7 +45,6 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/account-list" element={<AccountList />} />
-          <Route path="/transactions" element={<Transactions />} />
           {userRole === "Admin" && (
             <Route path="/admin/:page" element={<Admin />} />
           )}
