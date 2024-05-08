@@ -405,8 +405,27 @@ export const getDepositAccountsByUserId = async (req, res) => {
 export const getAccountTransactions = async (req, res) => {
   try {
     const { userid, accountID } = req.params;
+    console.log("userid", userid);
+    console.log("accountID", accountID);
 
-    // Get the account by accountID and userID
+    // Check the parameters are given correctly
+    if (!userid || !accountID) {
+      return res.status(400).json({
+        message: "fail",
+        data: { error: "User ID and account ID are required." },
+      });
+    }
+
+    // Check if the user exists
+    const user = await User.findByPk(userid);
+    if (!user) {
+      return res.status(404).json({
+        message: "fail",
+        data: { error: "The specified user ID does not exist." },
+      });
+    }
+
+    // Check if the account exists
     const account = await Account.findOne({
       where: { account_id: accountID, user_id: userid },
     });
@@ -450,6 +469,37 @@ export const getAccountTransactions = async (req, res) => {
 export const getTransactionById = async (req, res) => {
   try {
     const { userid, accountID, transactionID } = req.params;
+
+    // Check the parameters are given correctly
+    if (!userid || !accountID || !transactionID) {
+      return res.status(400).json({
+        message: "fail",
+        data: {
+          error: "User ID, account ID, and transaction ID are required.",
+        },
+      });
+    }
+
+    // Check if the user exists
+    const user = await User.findByPk(userid);
+    if (!user) {
+      return res.status(404).json({
+        message: "fail",
+        data: { error: "The specified user ID does not exist." },
+      });
+    }
+
+    // Check if the account exists
+    const account = await Account.findOne({
+      where: { account_id: accountID, user_id: userid },
+    });
+
+    if (!account) {
+      return res.status(422).json({
+        message: "fail",
+        data: { error: "The specified account ID does not exist." },
+      });
+    }
 
     // Retrieve the transaction from the database based on its ID and the associated account ID
     const transaction = await Transaction.findOne({
