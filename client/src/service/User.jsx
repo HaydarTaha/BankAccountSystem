@@ -26,3 +26,14 @@ export const getNameSurname = async (userID) => {
     throw error;
   }
 };
+
+export const getTransactionsByAccountID = async (userID, accountID) => {
+  try {
+    const response = await getAPI(
+      `/api/users/${userID}/accounts/${accountID}/transactions`
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
