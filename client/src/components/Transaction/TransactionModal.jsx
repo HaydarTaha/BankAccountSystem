@@ -57,8 +57,7 @@ const TransactionTableModal = ({ accountID, currency }) => {
                 {isFiltering ? "Hide Filters" : "Show Filters"}
               </button>
               {isFiltering && (
-                // Small length input group
-                <div className="input-group w-50 mt-3">
+                <div className="input-group w-50 mt-3 mx-auto">
                   <input
                     type="date"
                     className="form-control"
