@@ -197,7 +197,7 @@ const AccountCard = ({ account, removeAccount }) => {
           }}
           onClick={handleCloseTransactionModal}
         >
-          <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+          <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">Transaction History</h5>
@@ -208,7 +208,10 @@ const AccountCard = ({ account, removeAccount }) => {
                 ></button>
               </div>
               <div className="modal-body">
-                <TransactionTableModal accountID={account.accountID} />
+                <TransactionTableModal
+                  accountID={account.accountID}
+                  currency={currencySymbols[account.currency]}
+                />
               </div>
             </div>
           </div>
